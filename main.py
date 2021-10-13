@@ -2,7 +2,25 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
+from urllib.parse import urljoin, urlsplit
 
+
+
+def download_image(url_img, folder='images/'):
+    response = requests.get(url_img)
+    response.raise_for_status()
+
+    filename = url_img.split(sep='/')[-1]
+    path = os.path.join(folder, filename)
+
+    try:
+        check_for_redirect(response)
+        with open(path, 'wb') as file:
+            file.write(response.content)
+    except requests.HTTPError:
+        pass
+
+#download_image('https://tululu.org/shots/9.jpg')
 
 def download_txt(url, filename, folder='books/'):
     """Функция для скачивания текстовых файлов.
@@ -31,15 +49,16 @@ def download_txt(url, filename, folder='books/'):
 
 def check_for_redirect(response):
     if response.history:
-        print(response.history)
+        #print(response.history)
         raise requests.HTTPError
 
 
 def main():
     os.makedirs('books', exist_ok=True)
+    os.makedirs('images', exist_ok=True)
 
     for id_book in range(1, 11):
-        url = 'https://tululu.org/b' + str(id_book)
+        url = 'https://tululu.org/b' + str(id_book) + '/'
 
         response = requests.get(url)
         response.raise_for_status()
@@ -50,7 +69,15 @@ def main():
         title_book = str(id_book) + '. ' + title_text.split(sep='::')[0].strip()
         url_book = "https://tululu.org/txt.php?id=" + str(id_book)
 
-        download_txt(url_book, title_book)
+        try:
+            check_for_redirect(response)
+            print('Заголовок: ' + title_book)
+            url_img = urljoin('https://tululu.org', soup.find('div', class_='bookimage').find('img')['src'])
+            print(url_img)
+            download_txt(url_book, title_book)
+            download_image(url_img)
+        except requests.HTTPError:
+            pass
 
 
 if __name__ == '__main__':
