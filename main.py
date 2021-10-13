@@ -2,8 +2,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
-from urllib.parse import urljoin, urlsplit
-
+from urllib.parse import urljoin
 
 
 def download_image(url_img, folder='images/'):
@@ -20,7 +19,6 @@ def download_image(url_img, folder='images/'):
     except requests.HTTPError:
         pass
 
-#download_image('https://tululu.org/shots/9.jpg')
 
 def download_txt(url, filename, folder='books/'):
     """Функция для скачивания текстовых файлов.
@@ -49,7 +47,6 @@ def download_txt(url, filename, folder='books/'):
 
 def check_for_redirect(response):
     if response.history:
-        #print(response.history)
         raise requests.HTTPError
 
 
@@ -74,6 +71,8 @@ def main():
             print('Заголовок: ' + title_book)
             url_img = urljoin('https://tululu.org', soup.find('div', class_='bookimage').find('img')['src'])
             print(url_img)
+            for i in soup.find_all('div', class_='texts'):
+                print((i.find('span', class_='black')).text)
             download_txt(url_book, title_book)
             download_image(url_img)
         except requests.HTTPError:
