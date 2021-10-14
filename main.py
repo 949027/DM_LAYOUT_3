@@ -68,11 +68,17 @@ def main():
 
         try:
             check_for_redirect(response)
-            print('Заголовок: ' + title_book)
+            print('\nЗаголовок: ' + title_book)
+
+            for genre in soup.find('span', class_='d_book').find_all('a'):
+                print(genre.get_text())
+
             url_img = urljoin('https://tululu.org', soup.find('div', class_='bookimage').find('img')['src'])
             print(url_img)
-            for i in soup.find_all('div', class_='texts'):
-                print((i.find('span', class_='black')).text)
+
+            for comment in soup.find_all('div', class_='texts'):
+                print((comment.find('span', class_='black')).text)
+
             download_txt(url_book, title_book)
             download_image(url_img)
         except requests.HTTPError:
