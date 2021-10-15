@@ -40,7 +40,7 @@ def download_txt(soup, book_id, folder='books/'):
         title_text.split(sep='::')[0].strip(),
     )
 
-    clean_filename = f"{sanitize_filename(title_book)}.txt\n"
+    clean_filename = f"{sanitize_filename(title_book)}.txt"
     path = os.path.join(folder, clean_filename)
 
     response = requests.get(book_url, params=payload)
