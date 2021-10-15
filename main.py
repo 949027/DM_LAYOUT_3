@@ -17,12 +17,8 @@ def download_image(soup, folder='images/'):
     filename = url_image.split(sep='/')[-1]
     path = os.path.join(folder, filename)
 
-    try:
-        check_for_redirect(response)
-        with open(path, 'wb') as file:
-            file.write(response.content)
-    except requests.HTTPError:
-        pass
+    with open(path, 'wb') as file:
+        file.write(response.content)
 
 
 def download_txt(soup, book_id, folder='books/'):
@@ -50,12 +46,8 @@ def download_txt(soup, book_id, folder='books/'):
     response = requests.get(book_url, params=payload)
     response.raise_for_status()
 
-    try:
-        check_for_redirect(response)
-        with open(path, 'wb') as file:
-            file.write(response.content)
-    except requests.HTTPError:
-        pass
+    with open(path, 'wb') as file:
+        file.write(response.content)
 
     return path
 
@@ -74,11 +66,8 @@ def parse_book_page(soup):
     for genre in soup.find('span', class_='d_book').find_all('a'):
         genres.append(genre.get_text())
 
-    try:
-        for comment in soup.find_all('div', class_='texts'):
-            comments.append(comment.find('span', class_='black').text)
-    except requests.HTTPError:
-        pass
+    for comment in soup.find_all('div', class_='texts'):
+        comments.append(comment.find('span', class_='black').text)
 
     book = {
         'title': title_text.split(sep='::')[0].strip(),
