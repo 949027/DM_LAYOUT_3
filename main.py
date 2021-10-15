@@ -25,7 +25,7 @@ def download_image(soup, folder='images/'):
         pass
 
 
-def download_txt(url, payload, filename, folder='books/'):
+def download_txt(soup, book_id, folder='books/'):
     """Функция для скачивания текстовых файлов.
     Args:
         url (str): Cсылка на текст, который хочется скачать.
@@ -34,10 +34,20 @@ def download_txt(url, payload, filename, folder='books/'):
     Returns:
         str: Путь до файла, куда сохранён текст.
     """
-    clean_filename = f"{sanitize_filename(filename)}.txt\n"
+    book_url = "https://tululu.org/txt.php"
+    payload = {'id': book_id}
+
+    title_tag = soup.find('h1')
+    title_text = title_tag.text
+    title_book = '{}. {}'.format(
+        book_id,
+        title_text.split(sep='::')[0].strip(),
+    )
+
+    clean_filename = f"{sanitize_filename(title_book)}.txt\n"
     path = os.path.join(folder, clean_filename)
 
-    response = requests.get(url, params=payload)
+    response = requests.get(book_url, params=payload)
     response.raise_for_status()
 
     try:
@@ -109,17 +119,12 @@ def main():
 
             soup = BeautifulSoup(response.text, 'lxml')
 
-            title_tag = soup.find('h1')
-            title_text = title_tag.text
-            title_book = str(book_id) + '. ' + title_text.split(sep='::')[0].strip()
 
-            url_book = "https://tululu.org/txt.php"
-            payload = {'id': book_id}
 
             check_for_redirect(response)
             book = parse_book_page(soup)
             print('\nНазвание: ', book['title'], '\nАвтор: ', book['author'])
-            download_txt(url_book, payload, title_book)
+            download_txt(soup, book_id)
             download_image(soup)
         except requests.HTTPError:
             pass
