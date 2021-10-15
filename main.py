@@ -101,20 +101,20 @@ def main():
     os.makedirs('images', exist_ok=True)
 
     for id_book in range(args.start_id, args.end_id + 1):
-        url = 'https://tululu.org/b' + str(id_book) + '/'
-
-        response = requests.get(url)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'lxml')
-
-        title_tag = soup.find('h1')
-        title_text = title_tag.text
-        title_book = str(id_book) + '. ' + title_text.split(sep='::')[0].strip()
-
-        url_book = "https://tululu.org/txt.php?id=" + str(id_book)
-
         try:
+            url = 'https://tululu.org/b' + str(id_book) + '/'
+
+            response = requests.get(url)
+            response.raise_for_status()
+
+            soup = BeautifulSoup(response.text, 'lxml')
+
+            title_tag = soup.find('h1')
+            title_text = title_tag.text
+            title_book = str(id_book) + '. ' + title_text.split(sep='::')[0].strip()
+
+            url_book = "https://tululu.org/txt.php?id=" + str(id_book)
+
             check_for_redirect(response)
             book = parse_book_page(soup)
             print('\nНазвание: ', book['title'], '\nАвтор: ', book['author'])
