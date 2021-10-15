@@ -47,7 +47,7 @@ def download_txt(soup, book_id, folder='books/'):
     response.raise_for_status()
 
     with open(path, 'wb') as file:
-        file.write(response.content)
+        file.write(response.text.encode())
 
     return path
 
