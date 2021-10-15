@@ -58,16 +58,16 @@ def check_for_redirect(response):
 
 
 def parse_book_page(soup):
-    genres = []
-    comments = []
     title_tag = soup.find('h1')
     title_text = title_tag.text
 
-    for genre in soup.find('span', class_='d_book').find_all('a'):
-        genres.append(genre.get_text())
+    comment_blocks = soup.find_all('div', class_='texts')
+    genres_blocks = soup.find('span', class_='d_book').find_all('a')
 
-    for comment in soup.find_all('div', class_='texts'):
-        comments.append(comment.find('span', class_='black').text)
+    genres = [genre.get_text() for genre in genres_blocks]
+    comments = [
+        comment.find('span', class_='black').text for comment in comment_blocks
+    ]
 
     book = {
         'title': title_text.split(sep='::')[0].strip(),
