@@ -7,14 +7,14 @@ from urllib.parse import urljoin
 
 
 def download_image(soup, folder='images/'):
-    image_url = urljoin(
+    url_image = urljoin(
         'https://tululu.org',
         soup.find('div', class_='bookimage').find('img')['src'],
     )
-    response = requests.get(image_url)
+    response = requests.get(url_image)
     response.raise_for_status()
 
-    filename = image_url.split(sep='/')[-1]
+    filename = url_image.split(sep='/')[-1]
     path = os.path.join(folder, filename)
 
     try:
@@ -34,8 +34,8 @@ def download_txt(url, payload, filename, folder='books/'):
     Returns:
         str: Путь до файла, куда сохранён текст.
     """
-    filename_clean = f"{sanitize_filename(filename)}.txt\n"
-    path = os.path.join(folder, filename_clean)
+    clean_filename = f"{sanitize_filename(filename)}.txt\n"
+    path = os.path.join(folder, clean_filename)
 
     response = requests.get(url, params=payload)
     response.raise_for_status()
@@ -100,9 +100,9 @@ def main():
     os.makedirs('books', exist_ok=True)
     os.makedirs('images', exist_ok=True)
 
-    for id_book in range(args.start_id, args.end_id + 1):
+    for book_id in range(args.start_id, args.end_id + 1):
         try:
-            url = 'https://tululu.org/b' + str(id_book) + '/'
+            url = 'https://tululu.org/b' + str(book_id) + '/'
 
             response = requests.get(url)
             response.raise_for_status()
@@ -111,10 +111,10 @@ def main():
 
             title_tag = soup.find('h1')
             title_text = title_tag.text
-            title_book = str(id_book) + '. ' + title_text.split(sep='::')[0].strip()
+            title_book = str(book_id) + '. ' + title_text.split(sep='::')[0].strip()
 
             url_book = "https://tululu.org/txt.php"
-            payload = {'id': id_book}
+            payload = {'id': book_id}
 
             check_for_redirect(response)
             book = parse_book_page(soup)
