@@ -3,7 +3,7 @@ import os
 import argparse
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit,unquote
 
 
 def download_image(soup, folder='images/'):
@@ -14,7 +14,8 @@ def download_image(soup, folder='images/'):
     response = requests.get(url_image)
     response.raise_for_status()
 
-    filename = url_image.split(sep='/')[-1]
+    url_path_image = urlsplit(url_image)[2]
+    filename = unquote(os.path.split(url_path_image)[1])
     path = os.path.join(folder, filename)
 
     with open(path, 'wb') as file:
