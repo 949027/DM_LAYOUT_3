@@ -18,8 +18,8 @@ def download_image(soup, folder='images/'):
     filename = unquote(os.path.split(url_path_image)[1])
     path = os.path.join(folder, filename)
 
-    with open(path, 'wb') as file:
-        file.write(response.content)
+    with open(path, 'w') as file:
+        file.write(response.text)
 
 
 def download_txt(soup, book_id, folder='books/'):
@@ -39,9 +39,10 @@ def download_txt(soup, book_id, folder='books/'):
 
     title_tag = soup.find('h1')
     title_text = title_tag.text
+    title, _ = title_text.split(sep='::')
     title_book = '{}. {}'.format(
         book_id,
-        title_text.split(sep='::')[0].strip(),
+        title.strip(),
     )
 
     clean_filename = f"{sanitize_filename(title_book)}.txt"
