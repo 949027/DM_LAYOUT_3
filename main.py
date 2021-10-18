@@ -23,13 +23,16 @@ def download_image(soup, folder='images/'):
 
 
 def download_txt(soup, book_id, folder='books/'):
-    """Функция для скачивания текстовых файлов.
+    """Функция для скачивания текста книги с tululu.org.
+
     Args:
-        url (str): Cсылка на текст, который хочется скачать.
-        filename (str): Имя файла, с которым сохранять.
+        soup (bs4.BeautifulSoup): soup-объект, полученный из html-страницы.
+        book_id (int): id книги.
         folder (str): Папка, куда сохранять.
+
     Returns:
-        str: Путь до файла, куда сохранён текст.
+        str: Путь до файла, куда будет сохранён текст.
+
     """
     book_url = "https://tululu.org/txt.php"
     payload = {'id': book_id}
@@ -83,8 +86,7 @@ def parse_book_page(soup):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Программа для скачивания книг с '
-                    'tululu.org'
+        description='Программа для скачивания книг с tululu.org'
     )
     parser.add_argument(
         '-s',
