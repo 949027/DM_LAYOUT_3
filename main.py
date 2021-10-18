@@ -107,7 +107,7 @@ def main():
 
     for book_id in range(args.start_id, args.end_id + 1):
         try:
-            url = 'https://tululu.org/b' + str(book_id) + '/'
+            url = 'https://tululu.org/b{}/'.format(book_id)
 
             response = requests.get(url)
             response.raise_for_status()
