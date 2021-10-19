@@ -18,8 +18,8 @@ def download_image(soup, folder='images/'):
     filename = unquote(os.path.split(url_path_image)[1])
     path = os.path.join(folder, filename)
 
-    with open(path, 'w') as file:
-        file.write(response.text)
+    with open(path, 'wb') as file:
+        file.write(response.content)
 
 
 def download_txt(soup, book_id, folder='books/'):
@@ -51,8 +51,8 @@ def download_txt(soup, book_id, folder='books/'):
     response = requests.get(book_url, params=payload)
     response.raise_for_status()
 
-    with open(path, 'wb') as file:
-        file.write(response.text.encode())
+    with open(path, 'w') as file:
+        file.write(response.text)
 
     return path
 
